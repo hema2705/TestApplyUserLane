@@ -26,8 +26,7 @@ describe('Apply for Job Automation Tester', () => {
       this.pghighlights.openpositions,
       this.pghighlights.jointeam);
 
-  cy.log(`"Select the location and position" :`+(this.pghighlights.jobdepartment) +
-  (this.pghighlights.location))
+
 
     CarrersPageCy.selectLocation_jobtype(
       this.pghighlights.seldd_jobtype,
@@ -39,7 +38,7 @@ describe('Apply for Job Automation Tester', () => {
 
     let jobdisplayed = CarrersPageCy.verifyIsJobResultsdisplayed()
     if (jobdisplayed > "0") {
-      cy.log('displayed are the job results :' + (jobdisplayed))
+      cy.log('displayed are the job results :' + jobdisplayed)
     }
 
 
@@ -47,11 +46,6 @@ describe('Apply for Job Automation Tester', () => {
       this.pghighlights.jobdepartment,
       this.pghighlights._jd_jobtitle)
 
-      cy.log(`form -  job title`+(this.pghighlights._jd_jobtitle))
-      cy.log(`form - full name`+(this.pghighlights.fullname))
-      cy.log(`form - email`+(this.pghighlights.email))
-      cy.log(`form - phone`+(this.pghighlights.phone))
-      cy.log(`form- expeted salary`+(this.pghighlights.expectedctc))
 
 
     applicationPageCy.startApplication_VeriifySubmitted(
