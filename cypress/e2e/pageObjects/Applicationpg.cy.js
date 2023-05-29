@@ -7,20 +7,6 @@ class applicationPg {
         resumebrowse: () => cy.get('input[type=file]'),
     }
 
-
-    intecetis() {
-        cy.intercept("POST", Cypress.env('job_url') + `/9ff78ee1-9eb2-4cad-b7da-76757cd3c122/apply`).as(`createBoard`);
-
-        cy.wait('@createBoard').then(function ({ response }) {
-            if (response.statusCode == 400) {
-                cy.log("application not sucessful properly")
-            }
-            const requestBody = response
-            cy.log(requestBody)
-        })
-    }
-
-
     form_name() { return cy.get('[name="name"]') }
     form_email = () => cy.get('[name="email"]');
     form_phone = () => cy.get('[name="phone"]');
@@ -30,6 +16,10 @@ class applicationPg {
 
     startApplication_VeriifySubmitted(jobtype, fullname, email, phone, ctc, resumename, submit) {
         const hits = [fullname, email, phone, ctc, resumename, submit];
+        //  cy.intercept(
+        //     {method:'GET',url:'https://jobs.lever.co/parseResume'},
+        //     {StatusCode:200}).as(`resumeupload`);
+        //cy.intercept({POST,Cypress.env('job_url')+``}).as("submitapplication");
         cy.origin('https://jobs.lever.co', { args: { hits } }, ({ hits }) => {
 
             cy.get(".cc-desktop .cc-dismiss").click({ force: true });
@@ -37,10 +27,9 @@ class applicationPg {
             cy.get(`[data-qa="btn-apply-bottom"]`).should("have.text", "Apply for this job").click();
             cy.get('#application-form').should("be.visible")
 
-
-            cy.get('input[type=file]').selectFile({
+            cy.get('[id="resume-upload-input"]').selectFile({
                 contents: Cypress.Buffer.from('file contents'),
-                fileName: `cypress/fixtures/` + hits[4],
+                fileName: hits[4],
                 mimeType: 'text/pdf',
             })
 
@@ -51,14 +40,6 @@ class applicationPg {
                 }
             })
 
-
-            // cy.intercept("POST",Cypress.env('job_url')+`/parseResume`).as(`createBoard`);
-            // cy.wait('@createBoard').then(function({response}){
-            //     if(response.statusCode == 403){
-            //     cy.log("resume did not upload properly")
-            //     }
-            //   })
-
             cy.get('[name="name"]').type(hits[1])
 
             cy.get('[name="email"]').type(hits[1])
@@ -67,25 +48,15 @@ class applicationPg {
             cy.get('.application-question [type="checkbox"]').check()
             cy.get("#btn-submit").click()
 
-            cy.wait(20000)
-
-            // cy.intercept("POST",Cypress.env('job_url')+`/9ff78ee1-9eb2-4cad-b7da-76757cd3c122/apply`).as(`createBoard`);
-
-            //       cy.wait('@createBoard').then(function({response}){
-            //           if(response.statusCode == 400){
-            //           cy.log("application not sucessful properly")
-            //           }
-            //           const requestBody = response 
-            //           cy.log(requestBody)
-            //         })
-            if (hits[5]) {
+            if (hits[5] == true) {
+                cy.get(`[id="application-form"] `).submit()
                 cy.contains("✱ There was an error verifying your application. Please try again.").should("be.visible");
                 cy.contains("Submit your application").should("be.visible");
             }
-
-
         })
+
     }
+
 }
 
 
